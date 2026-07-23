@@ -73,15 +73,18 @@ TRANSLATIONS = {
     }
 }
 
+import os
+
 def get_db_connection():
     return pymysql.connect(
-        host='gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
-        port=4000,
-        user='3Z\wjJpPwYqFnb8c.root',
-        password='X4P3IGICkoZ9JoO', 
-        database='bookmyhotel',
+        host=os.environ.get('DB_HOST'),
+        port=int(os.environ.get('DB_PORT', 4000)),
+        user=os.environ.get('DB_USER'),
+        password=os.environ.get('DB_PASSWORD'),
+        database=os.environ.get('DB_NAME'),
         cursorclass=pymysql.cursors.DictCursor
     )
+    
 
 def get_translations(lang='en'):
     return TRANSLATIONS.get(lang, TRANSLATIONS['en'])
