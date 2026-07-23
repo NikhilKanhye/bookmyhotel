@@ -75,10 +75,11 @@ TRANSLATIONS = {
 
 def get_db_connection():
     return pymysql.connect(
-        host='NikhilBookMyHotel.mysql.pythonanywhere-services.com',
-        user='NikhilBookMyHotel',
-        password='YOUR_MYSQL_PASSWORD',  # Replace with your actual password
-        database='NikhilBookMyHotel$default',
+        host='gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
+        port=4000,
+        user='3Z\wjJpPwYqFnb8c.root',
+        password='X4P3IGICkoZ9JoO', 
+        database='bookmyhotel',
         cursorclass=pymysql.cursors.DictCursor
     )
 
