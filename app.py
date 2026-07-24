@@ -12,6 +12,7 @@ def get_db_connection():
         password=os.environ.get('DB_PASSWORD'),
         database=os.environ.get('DB_NAME'),
         connect_timeout=30,
+        ssl={'ca': '/etc/ssl/certs/ca-certificates.crt'},
         cursorclass=pymysql.cursors.DictCursor
     )
 
