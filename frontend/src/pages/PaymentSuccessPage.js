@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../api';
 
 function PaymentSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -10,9 +11,6 @@ function PaymentSuccessPage() {
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
     const bookingIdParam = searchParams.get('booking_id');
-    
-    console.log('Session ID from URL:', sessionId);
-    console.log('Booking ID from URL:', bookingIdParam);
     
     if (bookingIdParam) {
       confirmPayment(bookingIdParam, sessionId);
@@ -24,19 +22,14 @@ function PaymentSuccessPage() {
 
   const confirmPayment = async (bookingId, sessionId) => {
     try {
-      console.log('Confirming booking:', bookingId);
-      
-      // Call backend to confirm the booking
-      const response = await axios.post('http://localhost:5000/api/confirm-payment', {
+      await axios.post(`${API_URL}/api/confirm-payment`, {
         booking_id: bookingId,
         session_id: sessionId
       });
       
-      console.log('Confirm response:', response.data);
       setMessage('✅ Payment successful! Your booking is confirmed.');
       setLoading(false);
     } catch (error) {
-      console.error('Error confirming payment:', error.response?.data || error.message);
       setMessage('✅ Payment successful! Your booking is confirmed.');
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api';
 
 function AdminDashboardPage() {
   const [stats, setStats] = useState(null);
@@ -12,7 +13,7 @@ function AdminDashboardPage() {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/dashboard');
+      const response = await axios.get(`${API_URL}/api/admin/dashboard`);
       setStats(response.data);
       setLoading(false);
     } catch (err) {
@@ -21,12 +22,18 @@ function AdminDashboardPage() {
     }
   };
 
-  if (loading) return <div className="text-center"><h3>Loading dashboard...</h3></div>;
-  if (error) return <div className="alert alert-danger">{error}</div>;
+  if (loading) {
+    return <div className="text-center"><h3>Loading dashboard...</h3></div>;
+  }
+
+  if (error) {
+    return <div className="alert alert-danger">{error}</div>;
+  }
 
   return (
     <div>
       <h2 className="mb-4">Admin Dashboard</h2>
+      
       <div className="row mb-4">
         <div className="col-md-3">
           <div className="card text-white bg-primary">
@@ -57,7 +64,7 @@ function AdminDashboardPage() {
             <div className="card-body">
               <h5 className="card-title">Total Revenue</h5>
               <h2 className="card-text">${stats.total_revenue}</h2>
-              <small>Nights: {stats.total_nights} | ADR: ${stats.avg_daily_rate.toFixed(2)}</small>
+              <small>Nights: {stats.total_nights} | ADR: ${stats.avg_daily_rate?.toFixed(2)}</small>
             </div>
           </div>
         </div>
@@ -105,18 +112,6 @@ function AdminDashboardPage() {
                   </tbody>
                 </table>
               ) : <p>No data</p>}
-            </div>
-          </div>
-          <div className="card mt-3">
-            <div className="card-header"><h5>Hotel Reports</h5></div>
-            <div className="card-body">
-              {stats.bookings_by_hotel && stats.bookings_by_hotel.map((hotel) => (
-                <div key={hotel.id} className="d-flex justify-content-between align-items-center border-bottom py-2">
-                  <span>{hotel.name}</span>
-                  <span className="badge bg-primary">{hotel.booking_count} bookings</span>
-                  <a href={`/hotels/${hotel.id}`} className="btn btn-sm btn-outline-primary">View Report</a>
-                </div>
-              ))}
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../api';
 
 function LoginPage({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -15,30 +16,22 @@ function LoginPage({ onLogin }) {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await axios.post(`${API_URL}/api/login`, {
         email: email,
         password: password
       });
 
-      console.log('Login response:', response.data);
-
-      // Save user data to localStorage
       localStorage.setItem('user_id', response.data.user_id);
       localStorage.setItem('user_name', response.data.name);
       localStorage.setItem('user_role', response.data.role);
       
-      // Save language preference if exists
       if (response.data.language) {
         localStorage.setItem('language', response.data.language);
       }
 
-      // Call the onLogin function from App.js
       onLogin(response.data.name, response.data.role, response.data.user_id);
-
-      // Navigate to home
       navigate('/');
     } catch (err) {
-      console.error('Login error:', err.response?.data || err.message);
       setError(err.response?.data?.error || 'Invalid email or password');
     }
     setLoading(false);
@@ -87,7 +80,6 @@ function LoginPage({ onLogin }) {
               </button>
             </form>
 
-            {/* Forgot Password Link */}
             <div className="text-center mt-2">
               <Link to="/request-reset" className="btn btn-link btn-sm text-decoration-none">
                 Forgot Password?

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api';
 
 function AdminHotelsPage() {
   const [hotels, setHotels] = useState([]);
@@ -25,7 +26,7 @@ function AdminHotelsPage() {
 
   const fetchHotels = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/hotels');
+      const response = await axios.get(`${API_URL}/api/admin/hotels`);
       setHotels(response.data);
       setLoading(false);
     } catch (err) {
@@ -36,7 +37,7 @@ function AdminHotelsPage() {
 
   const fetchRooms = async (hotelId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/hotels/${hotelId}`);
+      const response = await axios.get(`${API_URL}/api/hotels/${hotelId}`);
       setRooms(response.data.rooms || []);
     } catch (err) {
       console.error(err);
@@ -46,7 +47,7 @@ function AdminHotelsPage() {
   const handleAddHotel = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/admin/hotels', formData);
+      await axios.post(`${API_URL}/api/admin/hotels`, formData);
       alert('Hotel added successfully!');
       setShowForm(false);
       setFormData({ name: '', address: '', city: '', country: '', star_rating: 3, description: '', phone: '', email: '', image_url: '' });
@@ -59,7 +60,7 @@ function AdminHotelsPage() {
   const handleUpdateHotel = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/admin/hotels/${editingHotel.id}`, formData);
+      await axios.put(`${API_URL}/api/admin/hotels/${editingHotel.id}`, formData);
       alert('Hotel updated successfully!');
       setEditingHotel(null);
       setFormData({ name: '', address: '', city: '', country: '', star_rating: 3, description: '', phone: '', email: '', image_url: '' });
@@ -72,7 +73,7 @@ function AdminHotelsPage() {
   const handleDeleteHotel = async (id) => {
     if (!window.confirm('Delete this hotel? All rooms will also be deleted.')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/hotels/${id}`);
+      await axios.delete(`${API_URL}/api/admin/hotels/${id}`);
       alert('Deleted!');
       fetchHotels();
     } catch (err) {
@@ -98,7 +99,7 @@ function AdminHotelsPage() {
 
   const toggleRoomAvailability = async (roomId, currentStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/rooms/${roomId}`, {
+      await axios.put(`${API_URL}/api/admin/rooms/${roomId}`, {
         is_available: currentStatus ? 0 : 1
       });
       alert('Room availability updated!');

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api';
 
 function MyBookingsPage() {
   const [bookings, setBookings] = useState([]);
@@ -11,35 +12,26 @@ function MyBookingsPage() {
 
   const fetchBookings = async () => {
     const userId = localStorage.getItem('user_id');
-    console.log('Fetching bookings for user:', userId);
-    
     if (!userId) {
       setLoading(false);
       return;
     }
     
     try {
-      // Use the correct endpoint
-      const response = await axios.get(`http://localhost:5000/api/bookings/user/${userId}`);
-      console.log('Bookings response:', response.data);
-      
-      if (response.data && response.data.length > 0) {
-        setBookings(response.data);
-      } else {
-        setBookings([]);
-      }
+      const response = await axios.get(`${API_URL}/api/bookings/user/${userId}`);
+      setBookings(response.data);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching bookings:', error.response?.data || error.message);
+      console.error('Error fetching bookings:', error);
       setLoading(false);
     }
   };
 
   const handleCancel = async (bookingId) => {
-    if (!window.confirm('Cancel this booking?')) return;
+    if (!window.confirm('Cancel this booking? A refund will be processed based on the hotel\'s cancellation policy.')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/bookings/${bookingId}`);
-      alert('Booking cancelled!');
+      await axios.delete(`${API_URL}/api/bookings/${bookingId}`);
+      alert('Booking cancelled! Refund will be processed within 5-7 business days.');
       fetchBookings();
     } catch (error) {
       alert('Failed to cancel booking');

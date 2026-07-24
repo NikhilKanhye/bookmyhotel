@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../api';
 
 function HotelsPage() {
   const [hotels, setHotels] = useState([]);
@@ -13,7 +14,7 @@ function HotelsPage() {
 
   const fetchHotels = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/hotels');
+      const response = await axios.get(`${API_URL}/api/hotels`);
       setHotels(response.data);
       setLoading(false);
     } catch (error) {
@@ -28,7 +29,7 @@ function HotelsPage() {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:5000/api/hotels/search?city=${searchCity}`);
+      const response = await axios.get(`${API_URL}/api/hotels/search?city=${searchCity}`);
       setHotels(response.data);
     } catch (error) {
       console.error('Error searching:', error);

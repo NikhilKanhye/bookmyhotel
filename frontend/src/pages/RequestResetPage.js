@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../api';
 
 function RequestResetPage() {
   const [email, setEmail] = useState('');
@@ -15,9 +16,8 @@ function RequestResetPage() {
     setSuccess('');
     
     try {
-      const response = await axios.post('http://localhost:5000/api/request-reset', { email });
+      const response = await axios.post(`${API_URL}/api/request-reset`, { email });
       setSuccess(response.data.message);
-      // Show the reset link for demo purposes
       if (response.data.reset_url) {
         setSuccess(`${response.data.message}\nReset link: ${response.data.reset_url}`);
       }

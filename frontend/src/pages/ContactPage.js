@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api';
 
 function ContactPage() {
   const [hotels, setHotels] = useState([]);
@@ -19,7 +20,7 @@ function ContactPage() {
 
   const fetchHotels = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/hotels');
+      const response = await axios.get(`${API_URL}/api/hotels`);
       setHotels(response.data);
     } catch (error) {
       console.error('Error fetching hotels:', error);
@@ -29,7 +30,7 @@ function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/contact', formData);
+      await axios.post(`${API_URL}/api/contact`, formData);
       setSuccess('Message sent successfully! We will get back to you soon.');
       setError('');
       setFormData({ name: '', email: '', hotel_id: '', subject: '', message: '' });

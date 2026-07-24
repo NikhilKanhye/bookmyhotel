@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api';
 
 function AdminPromotionsPage() {
   const [hotels, setHotels] = useState([]);
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({ hotel_id: '', title: '', description: '', discount_percentage: 10, start_date: '', end_date: '' });
+  const [formData, setFormData] = useState({
+    hotel_id: '',
+    title: '',
+    description: '',
+    discount_percentage: 10,
+    start_date: '',
+    end_date: ''
+  });
 
   useEffect(() => {
     fetchHotels();
@@ -14,14 +22,14 @@ function AdminPromotionsPage() {
 
   const fetchHotels = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/hotels');
+      const response = await axios.get(`${API_URL}/api/hotels`);
       setHotels(response.data);
     } catch (err) { console.error(err); }
   };
 
   const fetchPromotions = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/promotions');
+      const response = await axios.get(`${API_URL}/api/promotions`);
       setPromotions(response.data);
       setLoading(false);
     } catch (err) { console.error(err); setLoading(false); }
@@ -30,7 +38,7 @@ function AdminPromotionsPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/promotions', formData);
+      await axios.post(`${API_URL}/api/promotions`, formData);
       alert('Promotion added!');
       setFormData({ hotel_id: '', title: '', description: '', discount_percentage: 10, start_date: '', end_date: '' });
       fetchPromotions();

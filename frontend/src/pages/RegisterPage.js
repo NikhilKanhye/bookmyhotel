@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../api';
 
 function RegisterPage() {
   const [name, setName] = useState('');
@@ -15,7 +16,7 @@ function RegisterPage() {
     e.preventDefault();
     
     try {
-      await axios.post('http://localhost:5000/api/register', {
+      await axios.post(`${API_URL}/api/register`, {
         name,
         email,
         password,

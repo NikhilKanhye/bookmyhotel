@@ -86,7 +86,6 @@ function AppContent() {
               )}
             </ul>
             <ul className="navbar-nav ms-auto">
-              {/* Language Selector */}
               <li className="nav-item dropdown">
                 <button className="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                   {languages[language]?.flag || '🌍'} {language.toUpperCase()}

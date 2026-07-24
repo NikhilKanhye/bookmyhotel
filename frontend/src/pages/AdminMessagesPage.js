@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api';
 
 function AdminMessagesPage() {
   const [messages, setMessages] = useState([]);
@@ -12,7 +13,7 @@ function AdminMessagesPage() {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/admin/contact-messages');
+      const response = await axios.get(`${API_URL}/api/admin/contact-messages`);
       setMessages(response.data);
       setLoading(false);
     } catch (err) {
@@ -24,7 +25,7 @@ function AdminMessagesPage() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this message?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/contact-messages/${id}`);
+      await axios.delete(`${API_URL}/api/admin/contact-messages/${id}`);
       fetchMessages();
     } catch (err) {
       alert('Failed to delete message');

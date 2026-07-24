@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../api';
 
 function HotelDetailPage() {
   const { hotelId } = useParams();
@@ -30,13 +31,13 @@ function HotelDetailPage() {
   useEffect(() => {
     const fetchHotel = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/hotels/${hotelId}`);
+        const response = await axios.get(`${API_URL}/api/hotels/${hotelId}`);
         setHotel(response.data);
         setLoading(false);
         
         if (userId) {
           try {
-            const bookingsResponse = await axios.get(`http://localhost:5000/api/bookings/user/${userId}`);
+            const bookingsResponse = await axios.get(`${API_URL}/api/bookings/user/${userId}`);
             const userBookings = bookingsResponse.data;
             const hasBooking = userBookings.some(b => b.hotel_id === parseInt(hotelId));
             setHasBooked(hasBooking);
@@ -55,7 +56,7 @@ function HotelDetailPage() {
 
   const fetchCurrencies = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/currencies');
+      const response = await axios.get(`${API_URL}/api/currencies`);
       if (response.data && Object.keys(response.data).length > 0) {
         setRates(response.data);
       }
@@ -124,7 +125,7 @@ function HotelDetailPage() {
         return;
       }
 
-      console.log('Creating booking with:', {
+      const response = await axios.post(`${API_URL}/api/bookings`, {
         user_id: parseInt(userId),
         hotel_id: parseInt(hotelId),
         room_id: availableRoom.id,
@@ -132,17 +133,6 @@ function HotelDetailPage() {
         check_out: checkOut,
         guests: parseInt(guests)
       });
-
-      const response = await axios.post('http://localhost:5000/api/bookings', {
-        user_id: parseInt(userId),
-        hotel_id: parseInt(hotelId),
-        room_id: availableRoom.id,
-        check_in: checkIn,
-        check_out: checkOut,
-        guests: parseInt(guests)
-      });
-
-      console.log('Booking response:', response.data);
 
       setSuccess(`Booking created! Redirecting to payment...`);
       setError('');
@@ -152,13 +142,7 @@ function HotelDetailPage() {
         ? response.data.total_price 
         : parseFloat(response.data.total_price);
       
-      console.log('Creating Stripe session with:', {
-        booking_id: response.data.booking_id,
-        total_price: totalPrice,
-        hotel_name: hotel.name
-      });
-
-      const paymentResponse = await axios.post('http://localhost:5000/api/create-checkout-session', {
+      const paymentResponse = await axios.post(`${API_URL}/api/create-checkout-session`, {
         booking_id: response.data.booking_id,
         user_id: parseInt(userId),
         total_price: totalPrice,
@@ -167,12 +151,9 @@ function HotelDetailPage() {
         guests: parseInt(guests)
       });
 
-      console.log('Stripe session URL:', paymentResponse.data.url);
-
       window.location.href = paymentResponse.data.url;
       
     } catch (err) {
-      console.error('Booking error:', err.response?.data || err.message);
       setError(err.response?.data?.error || 'Booking failed');
       setSuccess('');
     }
@@ -187,7 +168,7 @@ function HotelDetailPage() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/reviews', {
+      await axios.post(`${API_URL}/api/reviews`, {
         user_id: parseInt(userId),
         hotel_id: parseInt(hotelId),
         rating: rating,
@@ -199,7 +180,7 @@ function HotelDetailPage() {
       setComment('');
       setRating(5);
       
-      const hotelResponse = await axios.get(`http://localhost:5000/api/hotels/${hotelId}`);
+      const hotelResponse = await axios.get(`${API_URL}/api/hotels/${hotelId}`);
       setHotel(hotelResponse.data);
       
     } catch (err) {
@@ -220,7 +201,6 @@ function HotelDetailPage() {
     <div>
       <Link to="/hotels" className="btn btn-secondary mb-3">← Back to Hotels</Link>
       
-      {/* Currency Selector */}
       <div className="float-end">
         <button className="btn btn-outline-secondary btn-sm" onClick={() => setShowCurrencySelector(!showCurrencySelector)}>
           💱 {currency}
